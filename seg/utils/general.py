@@ -839,7 +839,10 @@ def non_max_suppression(
     t = time.time()
     mi = 5 + nc  # mask start index
     output = [torch.zeros((0, 6 + nm), device=prediction.device)] * bs
-    for xi, x in enumerate(prediction):  # image index, image inference
+
+    for xi in range(0, prediction.shape[0]):
+        x = prediction[xi]
+    # for xi, x in enumerate(prediction):  # image index, image inference
         # Apply constraints
         # x[((x[..., 2:4] < min_wh) | (x[..., 2:4] > max_wh)).any(1), 4] = 0  # width-height
         x = x[xc[xi]]  # confidence
@@ -854,7 +857,7 @@ def non_max_suppression(
             x = torch.cat((x, v), 0)
 
         # If none remain process next image
-        if not x.shape[0]:
+        if x.shape[0] == 0:
             continue
 
         # Compute conf
